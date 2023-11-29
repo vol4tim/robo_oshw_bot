@@ -1,12 +1,11 @@
-import fs from "fs";
-
 export const products = [
   {
     id: "1",
-    image: {
-      source: fs.createReadStream(__dirname + "/../images/P1012625.JPG")
-    },
-    // "https://image.easyeda.com/pullimage/AdzPFbw5oAkRvTSohmfmEKrm5oB35ibXHLdnsal1.jpeg",
+    image:
+      // {
+      //   source: fs.createReadStream(__dirname + "/../images/P1012625.JPG")
+      // },
+      "https://raw.githubusercontent.com/vol4tim/robo_oshw_bot/ce14ec071391b186b4e6e752e94732ccdca74484/images/P1012625.JPG",
     title: "Universal IR Remote Control",
     price: 20,
     description:
@@ -19,10 +18,11 @@ export const products = [
   },
   {
     id: "2",
-    image: {
-      source: fs.createReadStream(__dirname + "/../images/P1012619.JPG")
-    },
-    // "https://image.easyeda.com/pullimage/7ui3Jj4k8Y219wcWZAsmLNTWrQjtbBUigp57wkFH.jpeg",
+    image:
+      // {
+      //   source: fs.createReadStream(__dirname + "/../images/P1012619.JPG")
+      // },
+      "https://raw.githubusercontent.com/vol4tim/robo_oshw_bot/ce14ec071391b186b4e6e752e94732ccdca74484/images/P1012619.JPG",
     title: "Smart Energy Power Consumption Monitoring",
     price: 38,
     description:
