@@ -12,7 +12,7 @@ export const products = [
       "Build smart climate control with any ANY A-N-Y air conditioner, setup open/close operations for any ANY A-N-Y gates in your home. We`ve built universal IR remote control with an open-source Tasmota firmware onboard. We installed USB-C port for your better experience - upgrade the firmware for the remote control just with a simple wired connection!",
     features: [
       "supports wide range of devices",
-      "firmware upgradable by plug-in usb-c por",
+      "firmware upgradable by plug-in usb-c port",
       "home assistant friendly"
     ]
   },
