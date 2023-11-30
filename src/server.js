@@ -29,32 +29,23 @@ app.post(
     }
 
     switch (event.type) {
-      case "payment_intent.succeeded": {
-        const paymentIntentSucceeded = event.data.object;
+      case "checkout.session.completed": {
+        const session = event.data.object;
         const order = await Order.findOne({
-          where: { stripe_order_id: paymentIntentSucceeded.id }
+          where: { id: session.metadata.order_id }
         });
         if (order) {
           await Order.update(
-            { status: STATUS.PAID },
-            {
-              where: { stripe_order_id: paymentIntentSucceeded.id }
-            }
+            { status: STATUS.PAID, stripe_order_id: session.payment_intent },
+            { where: { id: session.metadata.order_id } }
           );
           const profile = await Profile.findOne({
             where: { id: order.profileId }
           });
           const message = `Your order #${order.id} has been paid. \nManager will contact you shortly.`;
           await bot.telegram.sendMessage(profile.userId, message);
+          console.log("checkout.session.completed", session.metadata.order_id);
         }
-        break;
-      }
-      case "checkout.session.completed": {
-        const session = event.data.object;
-        await Order.update(
-          { stripe_order_id: session.payment_intent },
-          { where: { id: session.metadata.order_id } }
-        );
         break;
       }
       default:
