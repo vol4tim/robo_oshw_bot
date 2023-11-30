@@ -13,11 +13,16 @@ const orderWizard = new Scenes.WizardScene(
     return ctx.wizard.next();
   },
   async (ctx) => {
-    if (!ctx.message || !ctx.message.text || Number(ctx.message.text) <= 0) {
+    if (
+      !ctx.message ||
+      !ctx.message.text ||
+      parseInt(ctx.message.text) <= 0 ||
+      isNaN(parseInt(ctx.message.text))
+    ) {
       await ctx.reply("Error. Count is incorrect");
       return;
     }
-    const count = Number(ctx.message.text);
+    const count = parseInt(ctx.message.text);
     if (count > 3) {
       await ctx.reply("Maximum quantity available 3 pcs");
       return;
