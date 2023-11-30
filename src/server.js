@@ -44,6 +44,11 @@ app.post(
           });
           const message = `Your order #${order.id} has been paid. \nManager will contact you shortly.`;
           await bot.telegram.sendMessage(profile.userId, message);
+
+          for (const admin of config.admins) {
+            await bot.telegram.sendMessage(admin, `Оплачен заказ #${order.id}`);
+          }
+
           console.log("checkout.session.completed", session.metadata.order_id);
         }
         break;
