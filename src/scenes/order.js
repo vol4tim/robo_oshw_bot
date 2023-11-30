@@ -46,7 +46,7 @@ const orderWizard = new Scenes.WizardScene(
     ctx.session.order = {};
 
     await ctx.reply(
-      "Worldwide free shipping. \n\nAfter payment, a manager will contact you to clarify your order. \n\nGreat news! We offer worldwide free shipping. The next shipping date is on the 15th of December. The estimated time for worldwide delivery is between 15 to 30 days. Once you make the payment, one of our engineers will reach out to you regarding the details of your order."
+      "Worldwide free shipping. \n\nGreat news! We offer worldwide free shipping. The next shipping date is on the 15th of December. The estimated time for worldwide delivery is between 15 to 30 days. Once you make the payment, one of our engineers will reach out to you regarding the details of your order."
     );
     for (const admin of config.admins) {
       await ctx.telegram.sendMessage(admin, `Поступил новый заказ #${id}`);
