@@ -32,6 +32,9 @@ const Order = db.sequelize.define("order", {
   },
   status: {
     type: db.Sequelize.INTEGER
+  },
+  stripe_order_id: {
+    type: db.Sequelize.STRING
   }
 });
 

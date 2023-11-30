@@ -28,6 +28,7 @@ export async function card(order) {
     payment_method_types: ["card"],
     line_items: line_items,
     mode: "payment",
+    metadata: { order_id: order.id },
     success_url: `${YOUR_DOMAIN}/success.html`,
     cancel_url: `${YOUR_DOMAIN}/cancel.html`,
     automatic_tax: { enabled: true }

@@ -8,6 +8,7 @@ import { orderWizard } from "./scenes/order";
 import { orders } from "./scenes/orders";
 import { paymentsScene } from "./scenes/payments";
 import { start } from "./scenes/start";
+import { app } from "./server";
 
 const runApp = () => {
   bot.use(session());
@@ -43,4 +44,5 @@ const runApp = () => {
 
 db.sequelize.sync().then(() => {
   runApp();
+  app.listen(4242, () => console.log("Running on port 4242"));
 });
