@@ -4,8 +4,6 @@ import { products } from "../products";
 
 const stripe = Stripe(config.stripe);
 
-const YOUR_DOMAIN = "http://localhost:4242";
-
 export async function card(order) {
   const cart = JSON.parse(order.products);
   const line_items = [];
@@ -29,8 +27,8 @@ export async function card(order) {
     line_items: line_items,
     mode: "payment",
     metadata: { order_id: order.id },
-    success_url: `${YOUR_DOMAIN}/success.html`,
-    cancel_url: `${YOUR_DOMAIN}/cancel.html`,
+    success_url: config.bot.link,
+    cancel_url: config.bot.link,
     automatic_tax: { enabled: true }
   });
 
