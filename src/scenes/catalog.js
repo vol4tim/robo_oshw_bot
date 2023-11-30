@@ -18,7 +18,9 @@ ${escapers.MarkdownV2(product.description)}
 
 ${features}
 
-_${product.price}_ $
+$_${product.price}_ per device
+
+Worldwide free shipping
 `;
     await ctx.replyWithPhoto(product.image, {
       caption: message,
