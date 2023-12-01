@@ -1,6 +1,8 @@
+import { escapers } from "@telegraf/entity";
 import { Markup, Scenes } from "telegraf";
 import { config } from "../config";
-import { saveOrder } from "../models/order";
+import Order, { saveOrder } from "../models/order";
+import Profile from "../models/profile";
 import { products } from "../products";
 
 const orderWizard = new Scenes.WizardScene(
@@ -48,8 +50,24 @@ const orderWizard = new Scenes.WizardScene(
     await ctx.reply(
       "Worldwide free shipping. \n\nGreat news! We offer worldwide free shipping. The next shipping date is on the 15th of December. The estimated time for worldwide delivery is between 15 to 30 days. Once you make the payment, one of our engineers will reach out to you regarding the details of your order."
     );
+    const order = await Order.findOne({ where: { id } });
+    const cart = JSON.parse(order.products);
+    const product = products.find((item) => item.id === cart[0].id);
+    const user = await Profile.findOne({ where: { id: order.profileId } });
+    const message = `
+*Поступил новый заказ \\#${id} на сумму ${order.amount} $*
+Tg: @${escapers.MarkdownV2(user.username.toString())}
+Комментарий: ${
+      order.comment ? escapers.MarkdownV2(order.comment.toString()) : ""
+    }
+Товар: ${escapers.MarkdownV2(product.title)} \\| ${
+      cart[0].count
+    } pcs \\| ${escapers.MarkdownV2(cart[0].price.toString())}$
+`;
     for (const admin of config.admins) {
-      await ctx.telegram.sendMessage(admin, `Поступил новый заказ #${id}`);
+      await ctx.telegram.sendMessage(admin, message, {
+        parse_mode: "MarkdownV2"
+      });
     }
 
     await ctx.scene.leave();

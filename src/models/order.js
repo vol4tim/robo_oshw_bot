@@ -43,14 +43,16 @@ export const STATUS = {
   PAID: 2,
   PROCESS: 3,
   DELIVER: 4,
-  READY: 5
+  READY: 5,
+  CANCEL: 6
 };
 export const STATUS_STRING = {
   1: "Not paid",
   2: "Paid",
   3: "Getting ready to ship",
   4: "Delivered",
-  5: "Ready"
+  5: "Ready",
+  6: "Cancel"
 };
 
 export async function saveOrder(userId, data) {

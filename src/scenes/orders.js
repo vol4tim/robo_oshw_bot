@@ -1,7 +1,8 @@
 import { escapers } from "@telegraf/entity";
+import { Markup } from "telegraf";
 import bot from "../bot";
 import { config } from "../config";
-import Order, { STATUS_STRING } from "../models/order";
+import Order, { STATUS, STATUS_STRING } from "../models/order";
 import Profile from "../models/profile";
 import { products } from "../products";
 import { amountCart } from "../utils";
@@ -31,10 +32,42 @@ Product: ${escapers.MarkdownV2(product.title)} \\| ${
           cart[0].count
         } pcs \\| ${escapers.MarkdownV2(cart[0].price.toString())}$
 `;
-        await ctx.replyWithMarkdownV2(message);
+        await ctx.replyWithMarkdownV2(
+          message,
+          Markup.inlineKeyboard([
+            Markup.button.callback("Оплачен", `status-paid-${order.id}`),
+            Markup.button.callback(
+              "Готовится к отправке",
+              `status-process-${order.id}`
+            ),
+            Markup.button.callback(
+              "Доставляется",
+              `status-deliver-${order.id}`
+            ),
+            Markup.button.callback("Готов", `status-ready-${order.id}`),
+            Markup.button.callback("Отменить", `status-cancel-${order.id}`)
+          ])
+        );
       }
     } else {
       await ctx.reply("No orders");
+    }
+  });
+
+  bot.action(/^status-([a-z]+)-(\d+)$/, async (ctx) => {
+    await ctx.answerCbQuery();
+    const status = ctx.match[1].toUpperCase();
+    const id = ctx.match[2];
+    if (!Object.keys(STATUS).includes(status)) {
+      await ctx.reply("Не верный статус заказа");
+      return;
+    }
+    const order = await Order.findOne({ where: { id: id } });
+    if (order) {
+      await Order.update({ status: STATUS[status] }, { where: { id: id } });
+      await ctx.reply("Статус заказа изменен");
+    } else {
+      await ctx.reply("Order not found");
     }
   });
 }

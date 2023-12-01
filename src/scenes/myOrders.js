@@ -1,6 +1,7 @@
 import { escapers } from "@telegraf/entity";
 import { Markup } from "telegraf";
 import bot from "../bot";
+import db from "../models/db";
 import Order, { STATUS, STATUS_STRING } from "../models/order";
 import Profile from "../models/profile";
 import { products } from "../products";
@@ -8,7 +9,12 @@ import { products } from "../products";
 export function myOrders() {
   bot.command("my_orders", async (ctx) => {
     const profile = await Profile.findOne({ where: { userId: ctx.from.id } });
-    const orders = await Order.findAll({ where: { profileId: profile.id } });
+    const orders = await Order.findAll({
+      where: {
+        profileId: profile.id,
+        status: { [db.Sequelize.Op.ne]: STATUS.CANCEL }
+      }
+    });
     if (orders.length) {
       for (const order of orders) {
         const cart = JSON.parse(order.products);

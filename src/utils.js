@@ -4,6 +4,9 @@ import { config } from "./config";
 import { products } from "./products";
 
 export function amountCart(cart) {
+  if (!cart) {
+    return;
+  }
   return cart.reduce((amount, id) => {
     const product = products.find((item) => item.id === id.id);
     return amount + product.price * id.count;

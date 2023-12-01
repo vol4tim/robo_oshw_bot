@@ -12,7 +12,7 @@ export function start() {
         lastName: ctx.from.last_name
       });
     }
-    next();
+    await next();
   });
   bot.start(async (ctx) => {
     const profile = await Profile.findOne({ where: { userId: ctx.from.id } });

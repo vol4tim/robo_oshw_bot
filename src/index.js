@@ -1,5 +1,7 @@
+import { SQLite } from "@telegraf/session/sqlite";
 import { Scenes, session } from "telegraf";
 import bot from "./bot";
+import { PATH_SESSION_DB } from "./config";
 import db from "./models/db";
 import { catalog, catalogScene } from "./scenes/catalog";
 import { checkout, checkoutScene } from "./scenes/checkout";
@@ -11,7 +13,15 @@ import { start } from "./scenes/start";
 import { app } from "./server";
 
 const runApp = () => {
-  bot.use(session());
+  const store = SQLite({
+    filename: PATH_SESSION_DB
+  });
+  bot.use(
+    session({
+      store,
+      defaultSession: () => ({ cart: {}, order: {} })
+    })
+  );
 
   bot.telegram.setMyCommands([
     {
