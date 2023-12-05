@@ -1,4 +1,9 @@
-import { amountCart } from "../utils";
+import { escapers } from "@telegraf/entity";
+import bot from "../bot";
+import { config } from "../config";
+import { products } from "../products";
+import logger from "../tools/logger";
+import { amountCart } from "../tools/utils";
 import db from "./db";
 import Profile from "./profile";
 
@@ -35,6 +40,9 @@ const Order = db.sequelize.define("order", {
   },
   stripe_order_id: {
     type: db.Sequelize.STRING
+  },
+  meta: {
+    type: db.Sequelize.STRING
   }
 });
 
@@ -70,6 +78,53 @@ export async function saveOrder(userId, data) {
     status: STATUS.NEW
   });
   return order.id;
+}
+
+export async function paid(order_id, payment_intent = "") {
+  await Order.update(
+    { status: STATUS.PAID, stripe_order_id: payment_intent },
+    { where: { id: order_id } }
+  );
+  const order = await Order.findOne({
+    where: { id: order_id }
+  });
+  const profile = await Profile.findOne({
+    where: { id: order.profileId }
+  });
+  const message = `Your order #${order.id} has been paid. \nManager will contact you shortly.`;
+  await bot.telegram.sendMessage(profile.userId, message);
+
+  const cart = JSON.parse(order.products);
+  const product = products.find((item) => item.id === cart[0].id);
+  let payment = order.payment;
+  if (order.payment === "crypto") {
+    try {
+      const meta = JSON.parse(order.meta);
+      payment = `${order.payment} \\| ${meta.address} \\| ${
+        meta.chain === "polkadot"
+          ? meta.amountDot + " DOT"
+          : meta.amountKsm + " KSM"
+      }`;
+    } catch (error) {
+      logger.warn(`not meta ${order.id}`);
+    }
+  }
+  const messageAdmin = `
+*Оплачен заказ \\#${order.id} на сумму ${order.amount} $*
+Tg: @${escapers.MarkdownV2(profile.username.toString())}
+Комментарий: ${
+    order.comment ? escapers.MarkdownV2(order.comment.toString()) : ""
+  }
+Способ оплаты: ${payment}
+Товар: ${escapers.MarkdownV2(product.title)} \\| ${
+    cart[0].count
+  } pcs \\| ${escapers.MarkdownV2(cart[0].price.toString())}$
+`;
+  for (const admin of config.admins) {
+    await bot.telegram.sendMessage(admin, messageAdmin, {
+      parse_mode: "MarkdownV2"
+    });
+  }
 }
 
 export default Order;

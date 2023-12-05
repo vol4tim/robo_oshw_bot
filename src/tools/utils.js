@@ -1,7 +1,7 @@
 import axios from "axios";
 import fs from "fs";
-import { config } from "./config";
-import { products } from "./products";
+import { PATH_COURSE_CACHE, config } from "../config";
+import { products } from "../products";
 
 export function amountCart(cart) {
   if (!cart) {
@@ -23,9 +23,8 @@ export async function getCourse(
   tokens = ["kusama", "polkadot"],
   currency = "usd"
 ) {
-  const file = __dirname + "/../files/courses";
-  if (fs.existsSync(file)) {
-    const data = JSON.parse(fs.readFileSync(file));
+  if (fs.existsSync(PATH_COURSE_CACHE)) {
+    const data = JSON.parse(fs.readFileSync(PATH_COURSE_CACHE));
     if (data.time > Date.now()) {
       return data.data;
     }
@@ -44,7 +43,7 @@ export async function getCourse(
     result[token.id] = Number(token.current_price);
   }
   fs.writeFileSync(
-    __dirname + "/../files/courses",
+    PATH_COURSE_CACHE,
     JSON.stringify({ time: Date.now() + 60 * 1000, data: result })
   );
   return result;

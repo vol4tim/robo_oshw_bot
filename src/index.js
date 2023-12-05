@@ -2,6 +2,8 @@ import { SQLite } from "@telegraf/session/sqlite";
 import { Scenes, session } from "telegraf";
 import bot from "./bot";
 import { PATH_SESSION_DB } from "./config";
+import { start as startCrypto } from "./merchant/crypto";
+import { app as startStripe } from "./merchant/stripe";
 import db from "./models/db";
 import { catalog, catalogScene } from "./scenes/catalog";
 import { checkout, checkoutScene } from "./scenes/checkout";
@@ -10,7 +12,7 @@ import { orderWizard } from "./scenes/order";
 import { orders } from "./scenes/orders";
 import { paymentsScene } from "./scenes/payments";
 import { start } from "./scenes/start";
-import { app } from "./server";
+import logger from "./tools/logger";
 
 const runApp = () => {
   const store = SQLite({
@@ -54,5 +56,6 @@ const runApp = () => {
 
 db.sequelize.sync().then(() => {
   runApp();
-  app.listen(4242, () => console.log("Running on port 4242"));
+  startCrypto();
+  startStripe.listen(4242, () => logger.info("Running on port 4242"));
 });

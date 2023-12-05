@@ -2,10 +2,10 @@ import { escapers } from "@telegraf/entity";
 import { Markup } from "telegraf";
 import bot from "../bot";
 import { config } from "../config";
-import Order, { STATUS, STATUS_STRING } from "../models/order";
+import Order, { STATUS, STATUS_STRING, paid } from "../models/order";
 import Profile from "../models/profile";
 import { products } from "../products";
-import { amountCart } from "../utils";
+import { amountCart } from "../tools/utils";
 
 export function orders() {
   bot.command("orders", async (ctx) => {
@@ -64,8 +64,12 @@ Product: ${escapers.MarkdownV2(product.title)} \\| ${
     }
     const order = await Order.findOne({ where: { id: id } });
     if (order) {
-      await Order.update({ status: STATUS[status] }, { where: { id: id } });
-      await ctx.reply("Статус заказа изменен");
+      if (status === "PAID") {
+        await paid(id);
+      } else {
+        await Order.update({ status: STATUS[status] }, { where: { id: id } });
+        await ctx.reply("Статус заказа изменен");
+      }
     } else {
       await ctx.reply("Order not found");
     }

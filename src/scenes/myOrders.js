@@ -28,15 +28,21 @@ Product: ${escapers.MarkdownV2(product.title)} \\| ${
             cart[0].count
           } pcs \\| ${escapers.MarkdownV2(cart[0].price.toString())}$
 `;
+          const buttons = [];
+          if (order.payment) {
+            buttons.push(
+              Markup.button.callback("Checkout", `checkout-${order.id}`)
+            );
+          }
+          buttons.push(
+            Markup.button.callback(
+              "Сhange payment method",
+              `change-payment-${order.id}`
+            )
+          );
           await ctx.replyWithMarkdownV2(
             message,
-            Markup.inlineKeyboard([
-              Markup.button.callback("Checkout", `checkout-${order.id}`),
-              Markup.button.callback(
-                "Сhange payment method",
-                `change-payment-${order.id}`
-              )
-            ])
+            Markup.inlineKeyboard(buttons)
           );
         } else {
           const message = `
