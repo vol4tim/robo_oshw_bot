@@ -8,7 +8,8 @@ paymentsScene.enter(async (ctx) => {
   if (order) {
     if (order.status === STATUS.NEW) {
       await ctx.reply(
-        `Select payment method for order #${id}`,
+        "Select Stripe for payment or donate in DOT/KSM",
+        // `Select payment method for order #${id}`,
         Markup.inlineKeyboard([
           Markup.button.callback("Polkadot / Kusama", `pay-crypto-${id}`),
           Markup.button.callback("Stripe", `pay-card-${id}`)
