@@ -11,7 +11,9 @@ export function myOrders() {
     if (ctx.chat.type === "group") {
       return;
     }
-    const profile = await Profile.findOne({ where: { userId: ctx.from.id } });
+    const profile = await Profile.findOne({
+      where: { userId: ctx.from.id.toString() }
+    });
     const orders = await Order.findAll({
       where: {
         profileId: profile.id,

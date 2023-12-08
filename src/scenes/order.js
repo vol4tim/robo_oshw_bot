@@ -43,7 +43,7 @@ const orderWizard = new Scenes.WizardScene(
       ctx.session.order.comment = ctx.message.text;
     }
 
-    const id = await saveOrder(ctx.from.id, ctx.session);
+    const id = await saveOrder(ctx.from.id.toString(), ctx.session);
     ctx.session.cart = {};
     ctx.session.order = {};
 
