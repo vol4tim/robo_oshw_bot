@@ -8,6 +8,9 @@ import { products } from "../products";
 
 export function myOrders() {
   bot.command("my_orders", async (ctx) => {
+    if (ctx.chat.type === "group") {
+      return;
+    }
     const profile = await Profile.findOne({ where: { userId: ctx.from.id } });
     const orders = await Order.findAll({
       where: {

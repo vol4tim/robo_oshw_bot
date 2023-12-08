@@ -9,6 +9,9 @@ import { amountCart } from "../tools/utils";
 
 export function orders() {
   bot.command("orders", async (ctx) => {
+    if (ctx.chat.type === "group") {
+      return;
+    }
     if (!config.admins.includes(ctx.from.id.toString())) {
       return;
     }

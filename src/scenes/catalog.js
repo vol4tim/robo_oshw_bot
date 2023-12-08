@@ -36,6 +36,9 @@ export { catalogScene };
 
 export function catalog() {
   bot.command("catalog", async (ctx) => {
+    if (ctx.chat.type === "group") {
+      return;
+    }
     ctx.scene.enter("catalog");
   });
 
