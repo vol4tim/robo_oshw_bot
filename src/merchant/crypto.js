@@ -86,8 +86,8 @@ export async function checkOrders() {
         await order.update({
           meta: JSON.stringify({
             ...meta,
-            chain: "polkadot",
-            address: formateAddress(address, ss58.polkadot),
+            chain: "kusama",
+            address: formateAddress(address, ss58.kusama),
             paidtime: Date.now()
           })
         });

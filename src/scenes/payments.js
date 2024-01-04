@@ -24,8 +24,25 @@ paymentsScene.enter(async (ctx) => {
   }
   ctx.payments = null;
 });
-paymentsScene.on("message", (ctx) => {
-  ctx.reply("Select payment method");
+paymentsScene.on("message", async (ctx) => {
+  const id = ctx.payments;
+  if (id) {
+    return await ctx.reply(
+      "Select payment method",
+      Markup.inlineKeyboard([
+        Markup.button.callback("Polkadot / Kusama", `pay-crypto-${id}`),
+        Markup.button.callback("Cancel", "cancel")
+      ])
+    );
+  }
+  return await ctx.reply(
+    "Select payment method",
+    Markup.inlineKeyboard([Markup.button.callback("Cancel", "cancel")])
+  );
+});
+paymentsScene.action("cancel", async (ctx, next) => {
+  await ctx.scene.leave();
+  await next();
 });
 paymentsScene.action(/^pay-card-(\d+)$/, async (ctx) => {
   await ctx.answerCbQuery();

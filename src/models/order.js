@@ -102,8 +102,8 @@ export async function paid(order_id, payment_intent = "") {
       const meta = JSON.parse(order.meta);
       payment = `${order.payment} \\| ${meta.address} \\| ${
         meta.chain === "polkadot"
-          ? meta.amountDot + " DOT"
-          : meta.amountKsm + " KSM"
+          ? escapers.MarkdownV2(meta.amountDot) + " DOT"
+          : escapers.MarkdownV2(meta.amountKsm) + " KSM"
       }`;
     } catch (error) {
       logger.warn(`not meta ${order.id}`);

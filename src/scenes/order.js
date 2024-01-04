@@ -22,7 +22,10 @@ const orderWizard = new Scenes.WizardScene(
       parseInt(ctx.message.text) <= 0 ||
       isNaN(parseInt(ctx.message.text))
     ) {
-      await ctx.reply("Error. Count is incorrect");
+      await ctx.reply(
+        "Error. Count is incorrect",
+        Markup.inlineKeyboard([Markup.button.callback("Cancel", "cancel")])
+      );
       return;
     }
     const count = parseInt(ctx.message.text);
@@ -77,10 +80,10 @@ Tg: @${escapers.MarkdownV2(user.username.toString())}
   }
 );
 
-orderWizard.command("skip", async (ctx) => {
-  return ctx.wizard.next();
+orderWizard.action("skip", async (ctx, next) => {
+  await next();
 });
-orderWizard.command("cancel", async (ctx) => {
+orderWizard.action("cancel", async (ctx) => {
   return await ctx.scene.leave();
 });
 
