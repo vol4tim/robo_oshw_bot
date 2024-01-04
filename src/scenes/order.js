@@ -84,6 +84,7 @@ orderWizard.action("skip", async (ctx, next) => {
   await next();
 });
 orderWizard.action("cancel", async (ctx) => {
+  await ctx.deleteMessage();
   return await ctx.scene.leave();
 });
 

@@ -41,6 +41,7 @@ paymentsScene.on("message", async (ctx) => {
   );
 });
 paymentsScene.action("cancel", async (ctx, next) => {
+  await ctx.deleteMessage();
   await ctx.scene.leave();
   await next();
 });
