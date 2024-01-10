@@ -16,7 +16,8 @@ export async function crypto(order) {
     })
   });
 
-  const message = `To pay for the order, you need to transfer tokens to one of the networks
+  const messageText = `To pay for your order, simply transfer tokens to either network. Your order status will automatically switch to "paid," and we'll reach out to you for shipping details.`;
+  const message = `${escapers.MarkdownV2(messageText)}
 
 *Polkadot*
 Address \`${formateAddress(address, ss58.robonomics)}\`
