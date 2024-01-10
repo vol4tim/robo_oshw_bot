@@ -50,12 +50,28 @@ const orderWizard = new Scenes.WizardScene(
     ctx.session.cart = {};
     ctx.session.order = {};
 
-    await ctx.reply(
-      "Worldwide free shipping. \n\nGreat news! We offer worldwide free shipping. The next shipping date is on the 15th of December. The estimated time for worldwide delivery is between 15 to 30 days. Once you make the payment, one of our engineers will reach out to you regarding the details of your order."
-    );
     const order = await Order.findOne({ where: { id } });
     const cart = JSON.parse(order.products);
     const product = products.find((item) => item.id === cart[0].id);
+
+    await ctx.reply(`
+Hello Robo friend!
+
+Thank you for placing an order on Robonomics devices (https://robonomics.network/devices/). After your payment, one of our engineers will contact you regarding the details of shippment. We aim to dispatch your order within several working days after receiving the payment. If you have any questions, feel free to reach out to me 🙂
+
+ORDER DETAILS
+
+Items:
+* ${escapers.MarkdownV2(product.title)}: ${
+      cart[0].count
+    } pc = ${escapers.MarkdownV2(cart[0].price.toString())}$
+
+Shipping:
+Free worldwide shipping
+
+Order Status: Waiting for payment.
+    `);
+
     const user = await Profile.findOne({ where: { id: order.profileId } });
     const message = `
 *Поступил новый заказ \\#${id} на сумму ${order.amount} $*
