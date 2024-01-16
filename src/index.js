@@ -11,6 +11,7 @@ import { myOrders } from "./scenes/myOrders";
 import { orderWizard } from "./scenes/order";
 import { orders } from "./scenes/orders";
 import { paymentsScene } from "./scenes/payments";
+import { sender, senderWizard } from "./scenes/sender";
 import { start } from "./scenes/start";
 import logger from "./tools/logger";
 
@@ -24,6 +25,30 @@ const runApp = () => {
       defaultSession: () => ({ cart: {}, order: {} })
     })
   );
+
+  bot.use(async (ctx, next) => {
+    if (ctx.chat.type === "group") {
+      if (
+        !config.adminsGroup ||
+        ctx.message.chat.id !== config.adminsGroup ||
+        !ctx.message.reply_to_message ||
+        ctx.message.reply_to_message.from.id !== config.bot.id
+      ) {
+        return;
+      }
+    }
+
+    if (ctx.message && ctx.message.entities) {
+      if (
+        ["/orders", "/sender"].includes(ctx.message.text) &&
+        !config.admins.includes(ctx.from.id.toString())
+      ) {
+        return;
+      }
+    }
+
+    await next();
+  });
 
   bot.telegram.setMyCommands([
     {
@@ -40,7 +65,8 @@ const runApp = () => {
     catalogScene,
     orderWizard,
     paymentsScene,
-    checkoutScene
+    checkoutScene,
+    senderWizard
   ]);
 
   bot.use(stage.middleware());
@@ -50,6 +76,7 @@ const runApp = () => {
   myOrders();
   checkout();
   orders();
+  sender();
 
   bot.on("message", async (ctx) => {
     if (!config.adminsGroup) {

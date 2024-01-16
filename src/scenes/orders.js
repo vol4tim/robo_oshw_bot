@@ -1,7 +1,6 @@
 import { escapers } from "@telegraf/entity";
 import { Markup } from "telegraf";
 import bot from "../bot";
-import { config } from "../config";
 import Order, { STATUS, STATUS_STRING, paid } from "../models/order";
 import Profile from "../models/profile";
 import { products } from "../products";
@@ -9,13 +8,29 @@ import { amountCart } from "../tools/utils";
 
 export function orders() {
   bot.command("orders", async (ctx) => {
-    if (ctx.chat.type === "group") {
+    await ctx.replyWithMarkdownV2(
+      "Фильтр заказов: Выберите статус",
+      Markup.inlineKeyboard([
+        Markup.button.callback("Новый", `status-new`),
+        Markup.button.callback("Оплачен", `status-paid`),
+        Markup.button.callback("Готовится к отправке", `status-process`),
+        Markup.button.callback("Доставляется", `status-deliver`),
+        Markup.button.callback("Готов", `status-ready`),
+        Markup.button.callback("Отменен", `status-cancel`)
+      ])
+    );
+  });
+
+  bot.action(/^status-([a-z]+)$/, async (ctx) => {
+    await ctx.answerCbQuery();
+    const status = ctx.match[1].toUpperCase();
+
+    if (!Object.keys(STATUS).includes(status)) {
+      await ctx.reply("Не верный статус заказа");
       return;
     }
-    if (!config.admins.includes(ctx.from.id.toString())) {
-      return;
-    }
-    const orders = await Order.findAll();
+
+    const orders = await Order.findAll({ where: { status: STATUS[status] } });
     if (orders.length) {
       for (const order of orders) {
         const cart = JSON.parse(order.products);
@@ -26,15 +41,17 @@ export function orders() {
         // Phone: ${escapers.MarkdownV2(order.phone.toString())}
         // Address: ${escapers.MarkdownV2(order.address.toString())}
         const message = `
-*Order \\#${order.id} total ${amountCart(cart)} $*
-Tg: @${escapers.MarkdownV2(user.username.toString())}
-Comment: ${order.comment ? escapers.MarkdownV2(order.comment.toString()) : ""}
-Status: ${STATUS_STRING[order.status]}
-Payment: ${order.payment}
-Product: ${escapers.MarkdownV2(product.title)} \\| ${
-          cart[0].count
-        } pcs \\| ${escapers.MarkdownV2(cart[0].price.toString())}$
-`;
+    *Order \\#${order.id} total ${amountCart(cart)} $*
+    Tg: @${escapers.MarkdownV2(user.username.toString())}
+    Comment: ${
+      order.comment ? escapers.MarkdownV2(order.comment.toString()) : ""
+    }
+    Status: ${STATUS_STRING[order.status]}
+    Payment: ${order.payment}
+    Product: ${escapers.MarkdownV2(product.title)} \\| ${
+      cart[0].count
+    } pcs \\| ${escapers.MarkdownV2(cart[0].price.toString())}$
+    `;
         await ctx.replyWithMarkdownV2(
           message,
           Markup.inlineKeyboard([

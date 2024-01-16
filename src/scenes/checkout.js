@@ -31,9 +31,6 @@ export { checkoutScene };
 
 export function checkout() {
   bot.command("checkout", async (ctx) => {
-    if (ctx.chat.type === "group") {
-      return;
-    }
     ctx.checkout = 2;
     ctx.scene.enter("checkout");
   });
