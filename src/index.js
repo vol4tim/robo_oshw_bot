@@ -91,13 +91,22 @@ const runApp = () => {
       ctx.message.reply_to_message.message_id &&
       ctx.message.reply_to_message.from.id === config.bot.id
     ) {
-      await ctx.telegram.sendMessage(
-        ctx.message.reply_to_message.forward_from.id,
-        ctx.message.text,
-        {
-          reply_to_message_id: ctx.message.reply_to_message.message_id - 1
-        }
-      );
+      try {
+        await ctx.telegram.sendMessage(
+          ctx.message.reply_to_message.forward_from.id,
+          ctx.message.text,
+          {
+            reply_to_message_id: ctx.message.reply_to_message.message_id - 1
+          }
+        );
+      } catch (error) {
+        logger.error("Error reply_to_message " + JSON.stringify(error));
+        logger.warn(JSON.stringify(ctx.message));
+        await ctx.telegram.sendMessage(
+          ctx.message.reply_to_message.forward_from.id,
+          ctx.message.text
+        );
+      }
       return;
     } else if (
       ctx.message.chat.type === "group" &&
