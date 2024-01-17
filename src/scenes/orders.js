@@ -11,13 +11,19 @@ export function orders() {
     await ctx.replyWithMarkdownV2(
       "Фильтр заказов: Выберите статус",
       Markup.inlineKeyboard([
-        Markup.button.callback("Новый", `status-new`),
-        Markup.button.callback("Оплачен", `status-paid`),
-        Markup.button.callback("Готовится к отправке", `status-process`),
-        Markup.button.callback("Доставляется", `status-deliver`),
-        Markup.button.callback("Готов", `status-ready`),
-        Markup.button.callback("Отменен", `status-cancel`)
-      ])
+        [
+          Markup.button.callback("Новый", `status-new`),
+          Markup.button.callback("Оплачен", `status-paid`)
+        ],
+        [
+          Markup.button.callback("Готовится к отправке", `status-process`),
+          Markup.button.callback("Доставляется", `status-deliver`)
+        ],
+        [
+          Markup.button.callback("Готов", `status-ready`),
+          Markup.button.callback("Отменен", `status-cancel`)
+        ]
+      ]).resize()
     );
   });
 
@@ -55,18 +61,22 @@ export function orders() {
         await ctx.replyWithMarkdownV2(
           message,
           Markup.inlineKeyboard([
-            Markup.button.callback("Оплачен", `status-paid-${order.id}`),
-            Markup.button.callback(
-              "Готовится к отправке",
-              `status-process-${order.id}`
-            ),
-            Markup.button.callback(
-              "Доставляется",
-              `status-deliver-${order.id}`
-            ),
-            Markup.button.callback("Готов", `status-ready-${order.id}`),
-            Markup.button.callback("Отменить", `status-cancel-${order.id}`)
-          ])
+            [Markup.button.callback("Оплачен", `status-paid-${order.id}`)],
+            [
+              Markup.button.callback(
+                "Готовится к отправке",
+                `status-process-${order.id}`
+              ),
+              Markup.button.callback(
+                "Доставляется",
+                `status-deliver-${order.id}`
+              )
+            ],
+            [
+              Markup.button.callback("Готов", `status-ready-${order.id}`),
+              Markup.button.callback("Отменен", `status-cancel-${order.id}`)
+            ]
+          ]).resize()
         );
       }
     } else {
