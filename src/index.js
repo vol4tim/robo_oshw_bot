@@ -86,6 +86,9 @@ const runApp = () => {
       ctx.message.chat.type === "group" &&
       ctx.message.chat.id === config.adminsGroup &&
       ctx.message.reply_to_message &&
+      ctx.message.reply_to_message.from &&
+      ctx.message.reply_to_message.forward_from &&
+      ctx.message.reply_to_message.message_id &&
       ctx.message.reply_to_message.from.id === config.bot.id
     ) {
       await ctx.telegram.sendMessage(
@@ -96,6 +99,12 @@ const runApp = () => {
         }
       );
       return;
+    } else if (
+      ctx.message.chat.type === "group" &&
+      ctx.message.chat.id === config.adminsGroup &&
+      ctx.message.reply_to_message
+    ) {
+      logger.warn(JSON.stringify(ctx.message));
     }
     if (ctx.message.chat.type === "private") {
       ctx.forwardMessage(config.adminsGroup);
