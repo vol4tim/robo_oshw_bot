@@ -1,3 +1,4 @@
+import { escapers } from "@telegraf/entity";
 import { SQLite } from "@telegraf/session/sqlite";
 import { Scenes, session } from "telegraf";
 import bot from "./bot";
@@ -104,7 +105,13 @@ const runApp = () => {
         logger.warn(JSON.stringify(ctx.message));
         await ctx.telegram.sendMessage(
           ctx.message.reply_to_message.forward_from.id,
-          ctx.message.text
+          ">" +
+            escapers.MarkdownV2(ctx.message.reply_to_message.text) +
+            "\n\n" +
+            escapers.MarkdownV2(ctx.message.text),
+          {
+            parse_mode: "MarkdownV2"
+          }
         );
       }
       return;
