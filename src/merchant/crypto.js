@@ -40,15 +40,37 @@ async function checkBalance(api, address, amount) {
 
 export const api = {
   polkadot: null,
-  kusama: null
+  kusama: null,
+  robonomics: null
 };
 
 export async function start(withApi = false) {
   await waitReady();
   if (withApi) {
-    api.polkadot = await getApi(config.crypto.endpoint.polkadot);
-    api.kusama = await getApi(config.crypto.endpoint.kusama);
+    if ((withApi === true || withApi === "polkadot") && !api.polkadot) {
+      api.polkadot = await getApi(config.crypto.endpoint.polkadot);
+    }
+    if ((withApi === true || withApi === "kusama") && !api.kusama) {
+      api.kusama = await getApi(config.crypto.endpoint.kusama);
+    }
+    if ((withApi === true || withApi === "robonomics") && !api.robonomics) {
+      api.robonomics = await getApi(config.crypto.endpoint.robonomics);
+    }
   }
+}
+
+export async function checkBalanceXRT(address) {
+  const addressChain = keyring.encodeAddress(
+    address,
+    api.robonomics?.registry.chainSS58
+  );
+  const balance =
+    (await getBalance(api.robonomics, addressChain)).toNumber() /
+    10 ** api.robonomics?.registry.chainDecimals[0];
+  if (balance >= 100) {
+    return true;
+  }
+  return false;
 }
 
 function sleep(timeout = 1000) {

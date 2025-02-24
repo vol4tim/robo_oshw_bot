@@ -23,6 +23,7 @@
     "@telegraf/session": "^2.0.0-beta.6",
     "axios": "^1.6.2",
     "better-sqlite3": "^9.1.1",
+    "ethers": "^6.13.5",
     "express": "^4.18.2",
     "kysely": "^0.26.3",
     "sequelize": "^6.35.1",

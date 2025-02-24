@@ -8,6 +8,7 @@ import { app as startStripe } from "./merchant/stripe";
 import db from "./models/db";
 import { catalog, catalogScene } from "./scenes/catalog";
 import { checkout, checkoutScene } from "./scenes/checkout";
+import { lucky, luckyWizard } from "./scenes/lucky";
 import { myOrders } from "./scenes/myOrders";
 import { orderWizard } from "./scenes/order";
 import { orders } from "./scenes/orders";
@@ -63,6 +64,7 @@ const runApp = () => {
   ]);
 
   const stage = new Scenes.Stage([
+    luckyWizard,
     catalogScene,
     orderWizard,
     paymentsScene,
@@ -73,6 +75,7 @@ const runApp = () => {
   bot.use(stage.middleware());
 
   start();
+  lucky();
   catalog();
   myOrders();
   checkout();
