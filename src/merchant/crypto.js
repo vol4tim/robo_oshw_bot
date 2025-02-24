@@ -67,7 +67,7 @@ export async function checkBalanceXRT(address) {
   const balance =
     (await getBalance(api.robonomics, addressChain)).toNumber() /
     10 ** api.robonomics?.registry.chainDecimals[0];
-  if (balance >= 100) {
+  if (balance >= 42) {
     return true;
   }
   return false;

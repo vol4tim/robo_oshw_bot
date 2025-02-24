@@ -10,6 +10,7 @@ import Profile from "../models/profile";
 import { checkBalanceXRT as checkBalanceEthXRT } from "../tools/eth";
 
 const messageForSignature = "Altruist!";
+const minxrt = 42;
 
 const stepHandler = new Composer();
 
@@ -50,7 +51,7 @@ const luckyWizard = new Scenes.WizardScene(
     }
 
     const message = await ctx.reply(
-      `To participate in the giveaway, you need to sign the message \`${messageForSignature}\` with a key that has a balance of more than 100 XRT\\.`,
+      `To participate in the giveaway, you need to sign the message \`${messageForSignature}\` with a key that has a balance of more than ${minxrt} XRT\\.`,
       {
         parse_mode: "MarkdownV2",
         ...Markup.inlineKeyboard([
@@ -126,7 +127,7 @@ const luckyWizard = new Scenes.WizardScene(
       await start("robonomics");
       if (!(await checkBalanceXRT(address))) {
         const message = await ctx.reply(
-          `Error. Min balance is 100 XRT`,
+          `Error. Min balance is ${minxrt} XRT`,
           Markup.inlineKeyboard([Markup.button.callback("Cancel", "cancel")])
         );
         ctx.wizard.state.message = { message: message.message_id };
@@ -135,7 +136,7 @@ const luckyWizard = new Scenes.WizardScene(
     } else {
       if (!(await checkBalanceEthXRT(address))) {
         const message = await ctx.reply(
-          `Error. Min balance is 100 XRT`,
+          `Error. Min balance is ${minxrt} XRT`,
           Markup.inlineKeyboard([Markup.button.callback("Cancel", "cancel")])
         );
         ctx.wizard.state.message = { message: message.message_id };

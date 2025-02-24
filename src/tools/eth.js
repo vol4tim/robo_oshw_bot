@@ -19,7 +19,7 @@ export function start() {
 export async function checkBalanceXRT(address) {
   start();
   const balance = Number(await getBalanceXRT(provider, address)) / 10 ** 9;
-  if (balance >= 100) {
+  if (balance >= 42) {
     return true;
   }
   return false;
