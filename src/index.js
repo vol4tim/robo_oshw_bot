@@ -9,6 +9,7 @@ import db from "./models/db";
 import { catalog, catalogScene } from "./scenes/catalog";
 import { checkout, checkoutScene } from "./scenes/checkout";
 import { lucky, luckyWizard } from "./scenes/lucky";
+import { message, messageWizard } from "./scenes/message";
 import { myOrders } from "./scenes/myOrders";
 import { orderWizard } from "./scenes/order";
 import { orders } from "./scenes/orders";
@@ -69,7 +70,8 @@ const runApp = () => {
     orderWizard,
     paymentsScene,
     checkoutScene,
-    senderWizard
+    senderWizard,
+    messageWizard
   ]);
 
   bot.use(stage.middleware());
@@ -81,6 +83,7 @@ const runApp = () => {
   checkout();
   orders();
   sender();
+  message();
 
   bot.on("message", async (ctx) => {
     if (!config.adminsGroup) {
